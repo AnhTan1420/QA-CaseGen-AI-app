@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { KnowledgeFile } from "@/lib/types";
+import { extractTextFromFile } from "@/lib/document-parser";
 
 const demoFiles: KnowledgeFile[] = [];
+const allowedExtensions = [".txt", ".pdf", ".docx", ".xls", ".xlsx"];
 
 export async function GET() {
   return NextResponse.json({ files: demoFiles });
@@ -16,20 +18,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
-  const allowed = [".txt", ".pdf", ".docx"];
   const lowerName = file.name.toLowerCase();
 
-  if (!allowed.some((extension) => lowerName.endsWith(extension))) {
-    return NextResponse.json({ error: "Only .txt, .pdf, and .docx files are supported" }, { status: 400 });
+  if (!allowedExtensions.some((extension) => lowerName.endsWith(extension))) {
+    return NextResponse.json({ error: "Only .txt, .pdf, .docx, .xls, and .xlsx files are supported" }, { status: 400 });
   }
 
+  const buffer = Buffer.from(await file.arrayBuffer());
   const item: KnowledgeFile = {
     id: randomUUID(),
     file_name: file.name,
     file_path: `demo/${file.name}`,
     file_type: file.type || "application/octet-stream",
     file_size: file.size,
-    extracted_text: file.name.endsWith(".txt") ? await file.text() : "Demo extracted document context.",
+    extracted_text: await extractTextFromFile(buffer, file.type, file.name),
     created_at: new Date().toISOString(),
   };
 

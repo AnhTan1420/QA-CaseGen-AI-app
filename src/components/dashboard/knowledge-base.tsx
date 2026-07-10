@@ -80,8 +80,8 @@ export function KnowledgeBase() {
         >
           <UploadCloud className="mx-auto mb-3 h-9 w-9 text-indigo-400" />
           <p className="font-medium">Drop project docs here</p>
-          <p className="mt-1 text-sm text-slate-400">Supports .txt, .pdf, and .docx</p>
-          <input ref={inputRef} type="file" accept=".txt,.pdf,.docx" className="hidden" onChange={(event) => handleFiles(event.target.files)} />
+          <p className="mt-1 text-sm text-slate-400">Supports .txt, .pdf, .docx, .xls, and .xlsx</p>
+          <input ref={inputRef} type="file" accept=".txt,.pdf,.docx,.xls,.xlsx" className="hidden" onChange={(event) => handleFiles(event.target.files)} />
         </button>
 
         <div className={`rounded-xl border px-3 py-2 text-sm ${isUploading ? "border-indigo-500/30 bg-indigo-500/10 text-indigo-200" : "border-slate-800 bg-slate-950 text-slate-400"}`}>
